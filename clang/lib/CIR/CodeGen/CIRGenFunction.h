@@ -301,6 +301,11 @@ private:
     ~VarDeclContext() { restore(); }
   };
 
+public:
+RValue emitPseudoObjectRValue(const PseudoObjectExpr *E, AggValueSlot slot = AggValueSlot::ignored());
+
+LValue emitPseudoObjectLValue(const PseudoObjectExpr *E);
+
   /// -------
   /// Source Location tracking
   /// -------
@@ -1471,6 +1476,7 @@ public:
   mlir::Value emitAArch64SVEBuiltinExpr(unsigned BuiltinID, const CallExpr *E);
   mlir::Value emitAArch64SMEBuiltinExpr(unsigned BuiltinID, const CallExpr *E);
   mlir::Value emitX86BuiltinExpr(unsigned BuiltinID, const CallExpr *E);
+  mlir::Value emitNVPTXBuiltinExpr(unsigned BuiltinID, const CallExpr *E);
 
   /// Given an expression with a pointer type, emit the value and compute our
   /// best estimate of the alignment of the pointee.

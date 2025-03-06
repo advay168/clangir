@@ -2497,7 +2497,76 @@ RValue CIRGenFunction::emitBuiltinExpr(const GlobalDecl GD, unsigned BuiltinID,
   }
 
   if (IntrinsicID != Intrinsic::not_intrinsic) {
-    llvm_unreachable("NYI");
+    // SmallVector<Value*, 16> Args;
+    //
+    // // Find out if any arguments are required to be integer constant
+    // // expressions.
+    // unsigned ICEArguments = 0;
+    // ASTContext::GetBuiltinTypeError Error;
+    // getContext().GetBuiltinType(BuiltinID, Error, &ICEArguments);
+    // assert(Error == ASTContext::GE_None && "Should not codegen an error");
+    //
+    // Function *F = CGM.getIntrinsic(IntrinsicID);
+    // llvm::FunctionType *FTy = F->getFunctionType();
+    //
+    // for (unsigned i = 0, e = E->getNumArgs(); i != e; ++i) {
+    //   Value *ArgValue = emitScalarOrConstFoldImmArg(ICEArguments, i, E);
+    //   // If the intrinsic arg type is different from the builtin arg type
+    //   // we need to do a bit cast.
+    //   llvm::Type *PTy = FTy->getParamType(i);
+    //   if (PTy != ArgValue->getType()) {
+    //     // XXX - vector of pointers?
+    //     if (auto *PtrTy = dyn_cast<llvm::PointerType>(PTy)) {
+    //       if (PtrTy->getAddressSpace() !=
+    //           ArgValue->getType()->getPointerAddressSpace()) {
+    //         ArgValue = Builder.CreateAddrSpaceCast(
+    //             ArgValue, llvm::PointerType::get(getLLVMContext(),
+    //                                              PtrTy->getAddressSpace()));
+    //       }
+    //     }
+    //
+    //     // Cast vector type (e.g., v256i32) to x86_amx, this only happen
+    //     // in amx intrinsics.
+    //     if (PTy->isX86_AMXTy())
+    //       ArgValue = Builder.CreateIntrinsic(Intrinsic::x86_cast_vector_to_tile,
+    //                                          {ArgValue->getType()}, {ArgValue});
+    //     else
+    //       ArgValue = Builder.CreateBitCast(ArgValue, PTy);
+    //   }
+    //
+    //   Args.push_back(ArgValue);
+    // }
+    //
+    // Value *V = Builder.CreateCall(F, Args);
+    // QualType BuiltinRetType = E->getType();
+    //
+    // llvm::Type *RetTy = VoidTy;
+    // if (!BuiltinRetType->isVoidType())
+    //   RetTy = ConvertType(BuiltinRetType);
+    //
+    // if (RetTy != V->getType()) {
+    //   // XXX - vector of pointers?
+    //   if (auto *PtrTy = dyn_cast<llvm::PointerType>(RetTy)) {
+    //     if (PtrTy->getAddressSpace() != V->getType()->getPointerAddressSpace()) {
+    //       V = Builder.CreateAddrSpaceCast(
+    //           V, llvm::PointerType::get(getLLVMContext(),
+    //                                     PtrTy->getAddressSpace()));
+    //     }
+    //   }
+    //
+    //   // Cast x86_amx to vector type (e.g., v256i32), this only happen
+    //   // in amx intrinsics.
+    //   if (V->getType()->isX86_AMXTy())
+    //     V = Builder.CreateIntrinsic(Intrinsic::x86_cast_tile_to_vector, {RetTy},
+    //                                 {V});
+    //   else
+    //     V = Builder.CreateBitCast(V, RetTy);
+    // }
+    //
+    // if (RetTy->isVoidTy())
+    //   return RValue::get(nullptr);
+    //
+    // return RValue::get(V);
   }
 
   // Some target-specific builtins can have aggregate return values, e.g.
@@ -2595,7 +2664,7 @@ static mlir::Value emitTargetArchBuiltinExpr(CIRGenFunction *CGF,
     llvm_unreachable("NYI");
   case llvm::Triple::nvptx:
   case llvm::Triple::nvptx64:
-    llvm_unreachable("NYI");
+    return CGF->emitNVPTXBuiltinExpr(BuiltinID, E);
   case llvm::Triple::wasm32:
   case llvm::Triple::wasm64:
     llvm_unreachable("NYI");
