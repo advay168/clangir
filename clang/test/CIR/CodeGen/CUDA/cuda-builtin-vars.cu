@@ -76,7 +76,6 @@ void kernel(int *out) {
   // CIR:  cir.llvm.intrinsic "nvvm.read.ptx.sreg.nctaid.z"
   // LLVM: call {{.*}} i32 @llvm.nvvm.read.ptx.sreg.nctaid.z()
 
-
   out[i++] = warpSize;
   // CIR: [[REGISTER:%.*]] = cir.const #cir.int<32>
   // CIR: cir.store [[REGISTER]]
