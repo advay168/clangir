@@ -2497,7 +2497,12 @@ RValue CIRGenFunction::emitBuiltinExpr(const GlobalDecl GD, unsigned BuiltinID,
   }
 
   if (IntrinsicID != Intrinsic::not_intrinsic) {
-    llvm_unreachable("NYI");
+    unsigned iceArguments = 0;
+    ASTContext::GetBuiltinTypeError error;
+    getContext().GetBuiltinType(BuiltinID, error, &iceArguments);
+    assert(error == ASTContext::GE_None && "Should not codegen an error");
+    if (iceArguments > 0)
+      llvm_unreachable("NYI");
   }
 
   // Some target-specific builtins can have aggregate return values, e.g.
@@ -2595,7 +2600,7 @@ static mlir::Value emitTargetArchBuiltinExpr(CIRGenFunction *CGF,
     llvm_unreachable("NYI");
   case llvm::Triple::nvptx:
   case llvm::Triple::nvptx64:
-    llvm_unreachable("NYI");
+    return CGF->emitNVPTXBuiltinExpr(BuiltinID, E);
   case llvm::Triple::wasm32:
   case llvm::Triple::wasm64:
     llvm_unreachable("NYI");
